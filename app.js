@@ -236,18 +236,15 @@ const isNotDigit = (e) => { //Split clear buttons from the operators
 };
 
 const onScreen = (e) => {
-  if (e.target.id){
-    input.push(e.target.id);
-  } else {
-    input.push(e);
-  }
-    numbers.textContent = input.join('');
+  input.push(e.target.id);
+  numbers.textContent = input.join('');
 }; 
 
 const calc = (e) => { //Split numbers from non-numbers
   if (isDigit(e) === true) {
     onScreen(e);
   } else if (e.target.id === '.') {
+    if(input.includes('.')) { return };
     onScreen(e);
   } else {
     isNotDigit(e);
