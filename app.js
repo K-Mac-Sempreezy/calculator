@@ -1,7 +1,15 @@
 // DOM
 const numbers = document.querySelector('.text');
 const buttons = document.querySelectorAll('.button');
-const zero = document.querySelector('.zero');
+const option = document.getElementById('option');
+const bodyCoolClass = document.querySelector('.body-cool');
+const h1 = document.querySelector('h1');
+const wrapper = document.querySelector('.wrapper');
+const html = document.querySelector('html');
+const validKeys = ["Digit0", "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Minus", "Equal", "KeyA", "KeyC", "KeyM", "KeyT", "Enter", "Period", "Slash"];
+
+// also => multiply: "Key8" + ShiftKey=true; plus: "Equal" + ShiftKey=true
+
 
 //Global Variables
 let input = [];
@@ -10,6 +18,7 @@ let storedInput = [];
 let operand = [];
 let answer = [];
 let usedEqualSign = false; 
+let cool = true;
 
 // All Functions
 //doing the actual math here
@@ -29,14 +38,6 @@ const divide = (a, b) => {
   return a / b;
 };
 
-
-// Get the global variables ready for math
-
-// const plusMinus = (e) => {
-//     let a = (parseInt(input.join('').toString()) * -1);
-//     console.log(a);
-// };
-
 const equals = () => {
   let a;
   let b;
@@ -47,15 +48,15 @@ const equals = () => {
   }
 
   if (storedInput.length > 0 && storedInput.length < 2) {
-    a = parseInt(storedInput);
+    a = parseFloat(storedInput);
   } else {
-    a = parseInt(storedInput.join('').toString());
+    a = parseFloat(storedInput.join('').toString());
   }
 
   if (tempInput.length > 0 && tempInput.length < 2) {
-    b = parseInt(tempInput);
+    b = parseFloat(tempInput);
   } else {
-    b = parseInt(tempInput.join('').toString());
+    b = parseFloat(tempInput.join('').toString());
   }
 
   if (operand == '+') {
@@ -73,7 +74,8 @@ const equals = () => {
 };;
 
 const printAnswer = (a, b) => {
-  numbers.textContent = answer;
+  if (answer)
+  numbers.textContent = answer.join('');
   adjustVariables(a, b)
 };
 
@@ -96,14 +98,14 @@ const clear = (e) => {
     input = [];
     tempInput = [];
     storedInput = [];
-    numbers.textContent = 0;
+    numbers.textContent = '';
     operand = [];
     answer = [];
     usedEqualSign = false;
     
   } else if (e.target.id === 'clear') {
     input = [];
-    numbers.textContent = 0;
+    numbers.textContent = '';
   } 
 };
 
@@ -119,7 +121,7 @@ const updateVarValues = () => { //accessed only by operand (+ - * /) buttons
     //brand new calculation
       tempInput = input;
       input = [];
-      numbers.textContent = input;
+      numbers.textContent = tempInput.join('');
       return;
 
   } else if (input.length > 0 && tempInput.length > 0) {
@@ -130,7 +132,6 @@ const updateVarValues = () => { //accessed only by operand (+ - * /) buttons
       equals();
   };
 };
-
 
 const pushOperand = (op) => {
   operand = [];
@@ -158,35 +159,35 @@ const isPlusMinus = (e) => {// DO THIS AREA
     let a = (parseInt(tempInput.join('').toString()) * -1);
     tempInput = [];
     tempInput.push(a);
-    numbers.textContent = tempInput;
+    numbers.textContent = tempInput.join('');
     return;
     
   } else if (input.length > 0 && tempInput.length <= 0) {
     let b = (parseInt(input.join('').toString()) * -1);
     input = [];
     input.push(b);
-    numbers.textContent = input;
+    numbers.textContent = input.join('');
     return;
 
-  } else if (input.length <= 0 && tempInput.length > 0 && answer !== '') {
-    let f = (parseInt(input.join('').toString()) * -1);
+  } else if (input.length <= 0 && tempInput.length > 0) {
+    let f = (parseInt(tempInput.join('').toString()) * -1);
     tempInput = [];
     tempInput.push(f);
-    numbers.textContent = tempInput;
+    numbers.textContent = tempInput.join('');
     return;
     
   } else if (input.length > 0 && tempInput.length > 0){
     let c = (parseInt(input.join('').toString()) * -1);
     input = [];
     input.push(c);
-    numbers.textContent = input;
+    numbers.textContent = input.join('');
     return;
     
   } else if (input.length <= 0 && tempInput.length > 0 && storedInput.length > 0){
     let d = (parseInt(tempInput.join('').toString()) * -1);
     tempInput = [];
     tempInput.push(d);
-    numbers.textContent = tempInput;
+    numbers.textContent = tempInput.join('');
     return;
   };
 };
@@ -195,15 +196,12 @@ const isEquals = () => {
   usedEqualSign = true;
 
   if (input.length <= 0 && tempInput.length <= 0){ //All variables empty...no math to do
-    console.log('i-, t-');
     return;
     
   } else if (input.length > 0 && tempInput.length <= 0) {
-    console.log('i+, t-');
     return;
     
   } else if (input.length > 0 && tempInput.length > 0){
-    console.log('i+, t+');
     storedInput = tempInput;
     tempInput = [];
     tempInput = input;
@@ -211,7 +209,6 @@ const isEquals = () => {
     equals();
     
   } else if (input.length <= 0 && tempInput.length > 0 && storedInput.length > 0){
-    console.log('i-, t+, s+');
     equals();
   };
 
@@ -239,7 +236,11 @@ const isNotDigit = (e) => { //Split clear buttons from the operators
 };
 
 const onScreen = (e) => {
+  if (e.target.id){
     input.push(e.target.id);
+  } else {
+    input.push(e);
+  }
     numbers.textContent = input.join('');
 }; 
 
@@ -253,9 +254,151 @@ const calc = (e) => { //Split numbers from non-numbers
   }
 };
 
+const warmOption = () => {
+  if (input.length < 0) {
+    numbers.textContent = input.join('');
+  } else if (input.length <= 0 && tempInput.length > 0) {
+    numbers.textContent = tempInput.join('');
+  }
+  buttons.border = '2px solid var(--orange)';
+  h1.textContent = 'WARM CALCULATOR';
+  h1.classList.add('h1-warm');
+  bodyCoolClass.classList.remove('body-cool');
+  bodyCoolClass.classList.add('body-warm');
+  wrapper.classList.add('wrapper-warm');
+  numbers.classList.add('text-warm');
+  html.color = 'var(--orange)';
+  buttons.forEach(button => button.classList.add('button-warm'));
+};
+
+const coolOption = () => {
+  if (input.length < 0) {
+    numbers.textContent = input.join('');
+  } else if (input.length <= 0 && tempInput.length > 0) {
+    numbers.textContent = tempInput.join('');
+  }
+  buttons.forEach(button => button.classList.remove('button-warm'));
+  buttons.border = '2px solid var(--white)';
+  h1.textContent = 'COOL CALCULATOR';
+  h1.classList.remove('h1-warm');
+  bodyCoolClass.classList.remove('body-warm');
+  bodyCoolClass.classList.add('body-cool');
+  wrapper.classList.remove('wrapper-warm');
+  numbers.classList.remove('text-warm');
+  html.color = 'color: var(--white)';
+};
+
+const switchAppearance = () => {
+  console.log(cool);
+  if (cool) {
+    warmOption();
+    cool = false;
+  } else {
+    coolOption();
+    cool = true;
+  }
+};
+
+const keyHandler = (e) => {
+  if (!e.shiftKey) {
+    switch (e.code) {
+      case 'Equal': 
+        isEquals();
+        break;
+      case 'Minus': 
+        pushOperand('-');
+        break;
+      case 'Digit0': 
+        e.target.id = '0';
+        onScreen(e);
+        break;
+      case 'Digit1': 
+        e.target.id = '1';
+        onScreen(e);
+        break;
+      case 'Digit2': 
+        e.target.id = '2';
+        onScreen(e);
+        break;
+      case 'Digit3': 
+        e.target.id = '3';
+        onScreen(e);
+        break;
+      case 'Digit4': 
+        e.target.id = '4';
+        onScreen(e);
+        break;
+      case 'Digit5': 
+        e.target.id = '5';
+        onScreen(e);
+        break;
+      case 'Digit0': 
+        e.target.id = '0';
+        onScreen(e);
+        break;
+      case 'Digit6': 
+        e.target.id = '6';
+        onScreen(e);
+        break;
+      case 'Digit7': 
+        e.target.id = '7';
+        onScreen(e);
+        break;
+      case 'Digit8': 
+        e.target.id = '8';
+        onScreen(e);
+        break;
+      case 'Digit9': 
+        e.target.id = '9';
+        onScreen(e);
+        break;
+      case 'Slash': 
+        e.target.id = 'divide';
+        isNotDigit(e);
+        break;
+      case 'Minus': 
+        e.target.id = 'subtract';
+        isNotDigit(e);
+        break;
+      case 'KeyA': 
+        e.target.id = 'all-clear';
+        isNotDigit(e);
+        break;
+      case 'KeyC': 
+        e.target.id = 'clear';
+        isNotDigit(e);
+        break;
+      case 'KeyM': 
+        e.target.id = 'plus-minus';
+        isPlusMinus(e);
+        break;
+      case 'KeyT': 
+        switchAppearance();
+        break;
+      case 'Enter': 
+          e.target.id = 'equals';
+          isEquals();
+          break;
+      case 'Period': 
+          e.target.id = '.';
+          onScreen(e);
+          break;
+    }
+  } else if (!!e.shiftKey) {
+    switch (e.code) {
+      case 'Equal': //Add
+        e.target.id = 'add';
+        routeOperator(e);
+        break;
+      case 'Digit8': //Multiply
+        e.target.id = 'multiply';
+        routeOperator(e);
+    }
+  }
+};
+
+//Event Listeners
 
 buttons.forEach(button => button.addEventListener('click', calc));
-buttons.forEach(button => button.addEventListener('click', (e) => {
-  console.log(e.target.id);
-}));
-zero.addEventListener('click', calc);
+option.addEventListener('click', switchAppearance);
+document.addEventListener('keydown', keyHandler);
