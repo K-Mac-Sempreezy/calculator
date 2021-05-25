@@ -17,7 +17,7 @@ let tempInput = [];
 let storedInput = [];
 let operand = [];
 let answer = [];
-let usedEqualSign = false; 
+let usedEqualSign = false;
 let cool = true;
 
 // All Functions
@@ -45,6 +45,10 @@ const equals = () => {
   if (tempInput.length <= 0 || input.length > 0) {
     // just in case something weird comes through
     return;
+  }
+
+  if (input.length <= 0 && tempInput.length > 0 && storedInput.length <= 0) {
+    storedInput = tempInput;
   }
 
   if (storedInput.length > 0 && storedInput.length < 2) {
@@ -80,9 +84,6 @@ const printAnswer = (a, b) => {
 };
 
 const adjustVariables = (a, b) => {
-  if (usedEqualSign == true) {
-    operand = [];
-  };
   input = [];
   tempInput = [];
   tempInput = answer;
@@ -102,11 +103,11 @@ const clear = (e) => {
     operand = [];
     answer = [];
     usedEqualSign = false;
-    
+
   } else if (e.target.id === 'clear') {
     input = [];
     numbers.textContent = '';
-  } 
+  }
 };
 
 const updateVarValues = () => { //accessed only by operand (+ - * /) buttons
@@ -153,7 +154,7 @@ const routeOperator = (e) => {
   updateVarValues();
 };
 
-const isPlusMinus = (e) => {// DO THIS AREA
+const isPlusMinus = (e) => {// only accessible by +/- button
 
   if (input.length <= 0 && tempInput.length <= 0){ //All variables empty...no math to do
     let a = (parseInt(tempInput.join('').toString()) * -1);
@@ -161,7 +162,7 @@ const isPlusMinus = (e) => {// DO THIS AREA
     tempInput.push(a);
     numbers.textContent = tempInput.join('');
     return;
-    
+
   } else if (input.length > 0 && tempInput.length <= 0) {
     let b = (parseInt(input.join('').toString()) * -1);
     input = [];
@@ -175,14 +176,14 @@ const isPlusMinus = (e) => {// DO THIS AREA
     tempInput.push(f);
     numbers.textContent = tempInput.join('');
     return;
-    
+
   } else if (input.length > 0 && tempInput.length > 0){
     let c = (parseInt(input.join('').toString()) * -1);
     input = [];
     input.push(c);
     numbers.textContent = input.join('');
     return;
-    
+
   } else if (input.length <= 0 && tempInput.length > 0 && storedInput.length > 0){
     let d = (parseInt(tempInput.join('').toString()) * -1);
     tempInput = [];
@@ -193,24 +194,32 @@ const isPlusMinus = (e) => {// DO THIS AREA
 };
 
 const isEquals = () => {
-  usedEqualSign = true;
 
   if (input.length <= 0 && tempInput.length <= 0){ //All variables empty...no math to do
     return;
-    
+
   } else if (input.length > 0 && tempInput.length <= 0) {
     return;
-    
-  } else if (input.length > 0 && tempInput.length > 0){
+
+  } else if (input.length > 0 && tempInput.length > 0 && operand.length <= 0){
+    return;
+
+  } else if (input.length > 0 && tempInput.length > 0 && operand.length > 0){
+    usedEqualSign = true;
     storedInput = tempInput;
     tempInput = [];
     tempInput = input;
     input = [];
     equals();
-    
+
   } else if (input.length <= 0 && tempInput.length > 0 && storedInput.length > 0){
+    usedEqualSign = true;
     equals();
-  };
+
+  } else if (input.length <= 0 && tempInput.length > 0 && operand.length > 0) {
+    usedEqualSign = true;
+    equals();
+  }
 
 };
 
@@ -223,13 +232,13 @@ const isDigit = (e) => {
 
 const isNotDigit = (e) => { //Split clear buttons from the operators
   if (e.target.id === 'all-clear') {
-    clear(e); 
+    clear(e);
   } else if (e.target.id === 'clear') {
-    clear(e); 
+    clear(e);
   } else if (e.target.id === 'equals'){
     isEquals();
   } else if (e.target.id === 'plus-minus'){
-    isPlusMinus() 
+    isPlusMinus()
   } else {
     routeOperator(e);
   };
@@ -238,7 +247,7 @@ const isNotDigit = (e) => { //Split clear buttons from the operators
 const onScreen = (e) => {
   input.push(e.target.id);
   numbers.textContent = input.join('');
-}; 
+};
 
 const calc = (e) => { //Split numbers from non-numbers
   if (isDigit(e) === true) {
@@ -299,84 +308,84 @@ const switchAppearance = () => {
 const keyHandler = (e) => {
   if (!e.shiftKey) {
     switch (e.code) {
-      case 'Equal': 
+      case 'Equal':
         isEquals();
         break;
-      case 'Minus': 
+      case 'Minus':
         pushOperand('-');
         break;
-      case 'Digit0': 
+      case 'Digit0':
         e.target.id = '0';
         onScreen(e);
         break;
-      case 'Digit1': 
+      case 'Digit1':
         e.target.id = '1';
         onScreen(e);
         break;
-      case 'Digit2': 
+      case 'Digit2':
         e.target.id = '2';
         onScreen(e);
         break;
-      case 'Digit3': 
+      case 'Digit3':
         e.target.id = '3';
         onScreen(e);
         break;
-      case 'Digit4': 
+      case 'Digit4':
         e.target.id = '4';
         onScreen(e);
         break;
-      case 'Digit5': 
+      case 'Digit5':
         e.target.id = '5';
         onScreen(e);
         break;
-      case 'Digit0': 
+      case 'Digit0':
         e.target.id = '0';
         onScreen(e);
         break;
-      case 'Digit6': 
+      case 'Digit6':
         e.target.id = '6';
         onScreen(e);
         break;
-      case 'Digit7': 
+      case 'Digit7':
         e.target.id = '7';
         onScreen(e);
         break;
-      case 'Digit8': 
+      case 'Digit8':
         e.target.id = '8';
         onScreen(e);
         break;
-      case 'Digit9': 
+      case 'Digit9':
         e.target.id = '9';
         onScreen(e);
         break;
-      case 'Slash': 
+      case 'Slash':
         e.target.id = 'divide';
         isNotDigit(e);
         break;
-      case 'Minus': 
+      case 'Minus':
         e.target.id = 'subtract';
         isNotDigit(e);
         break;
-      case 'KeyA': 
+      case 'KeyA':
         e.target.id = 'all-clear';
         isNotDigit(e);
         break;
-      case 'KeyC': 
+      case 'KeyC':
         e.target.id = 'clear';
         isNotDigit(e);
         break;
-      case 'KeyM': 
+      case 'KeyM':
         e.target.id = 'plus-minus';
         isPlusMinus(e);
         break;
-      case 'KeyT': 
+      case 'KeyT':
         switchAppearance();
         break;
-      case 'Enter': 
+      case 'Enter':
           e.target.id = 'equals';
           isEquals();
           break;
-      case 'Period': 
+      case 'Period':
           e.target.id = '.';
           onScreen(e);
           break;
